@@ -183,7 +183,7 @@ async def lifespan(app: FastAPI):
     yield
     print("Shutting down ML Service.")
 
-app = FastAPI(title="PCOS PyTorch ML Service", lifespan=lifespan)
+app = FastAPI(title="Femlytix ML Engine", lifespan=lifespan)
 
 # ── Prediction Endpoint ──
 @app.post("/predict")

@@ -18,7 +18,7 @@ async def lifespan(app: FastAPI):
     # Shutdown
     print("[SHUTDOWN] Cleaning up...")
 
-app = FastAPI(title="PCOS AI Medical Platform", version="2.0.0", lifespan=lifespan)
+app = FastAPI(title="Femlytix AI Backend", version="2.0.0", lifespan=lifespan)
 
 # CORS setup
 origins = [

@@ -1,4 +1,4 @@
-# PCOS Medical AI Platform
+# Femlytix Platform
 
 A full-stack, multimodal medical AI application engineered to analyze clinical data and ultrasound imaging for the early detection and management of Polycystic Ovary Syndrome (PCOS). The platform leverages deep learning, reinforcement learning, and Google Gemini 2.5 Flash to automatically interpret medical data, provide actionable lifestyle prescriptions, and generate comprehensive PDF medical reports.
 

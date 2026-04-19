@@ -25,7 +25,7 @@ export default function Home() {
 
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 mt-4">
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 glow-text">
-            NeuroMed AI
+            Femlytix
           </span>
         </h1>
 
