@@ -1,0 +1,13 @@
+torch
+torchvision
+torchaudio
+fastapi
+uvicorn[standard]
+tensorflow-cpu>=2.16.0
+scikit-learn
+joblib
+h5py
+pillow
+python-multipart
+pydantic
+numpy<2.0.0
