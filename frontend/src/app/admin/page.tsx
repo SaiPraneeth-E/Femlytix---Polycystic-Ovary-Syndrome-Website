@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   Activity,
@@ -20,20 +20,7 @@ import {
   Stethoscope
 } from "lucide-react";
 
-// Mock Data
-const stats = [
-  { name: "Total Prescreened", value: "1,248", change: "+12%", icon: Users, color: "text-blue-400" },
-  { name: "High-Risk Detected", value: "342", change: "+4%", icon: AlertTriangle, color: "text-amber-400" },
-  { name: "AI Confidence Avg", value: "94.2%", change: "+1.1%", icon: BrainCircuit, color: "text-purple-400" },
-  { name: "Sys Health", value: "99.9%", change: "Stable", icon: Activity, color: "text-emerald-400" },
-];
 
-const mockPatients = [
-  { id: "PT-0091", name: "Sarah Jenkins", age: 26, status: "High Risk", confidence: "98%", time: "10 min ago", severity: "critical", features: { bmi: 31.2, fshLhRatio: 2.8, cycleLength: 42, follicles: 14 } },
-  { id: "PT-0092", name: "Maria Gonzalez", age: 31, status: "Clear", confidence: "87%", time: "45 min ago", severity: "normal", features: { bmi: 22.4, fshLhRatio: 1.1, cycleLength: 28, follicles: 5 } },
-  { id: "PT-0093", name: "Emily Chen", age: 22, status: "Review Required", confidence: "61%", time: "2 hours ago", severity: "warning", features: { bmi: 26.8, fshLhRatio: 1.9, cycleLength: 34, follicles: 9 } },
-  { id: "PT-0094", name: "Aisha Patel", age: 29, status: "High Risk", confidence: "92%", time: "3 hours ago", severity: "critical", features: { bmi: 29.5, fshLhRatio: 3.1, cycleLength: 48, follicles: 18 } },
-];
 
 const initialUsers = [
   { id: "USR-001", name: "Dr. Jane Smith", role: "SysAdmin", email: "jane.smith@clinic.com", active: true },
@@ -55,6 +42,40 @@ export default function AdminDashboard() {
   // States for interactive features
   const [selectedPatient, setSelectedPatient] = useState<any>(null);
   const [systemUsers, setSystemUsers] = useState(initialUsers);
+  
+  const [livePatients, setLivePatients] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Hydrate Data from Dynamic Backend Call
+  useEffect(() => {
+    fetch("http://localhost:8000/api/predict/patients")
+      .then(res => res.json())
+      .then(data => {
+        if(Array.isArray(data)) {
+           setLivePatients(data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+         console.error("Failed to fetch patients", err);
+         setLoading(false);
+      });
+  }, []);
+
+  const totalPatients = livePatients.length;
+  const highRisk = livePatients.filter(p => p.status === "High Risk" || p.status === "Review Required").length;
+  let avgConfidence = 0;
+  if(totalPatients > 0) {
+      const sum = livePatients.reduce((acc, p) => acc + parseFloat(p.confidence), 0);
+      avgConfidence = sum / totalPatients;
+  }
+
+  const liveStats = [
+    { name: "Total Prescreened", value: totalPatients.toString(), change: "Live", icon: Users, color: "text-blue-400" },
+    { name: "High-Risk Detected", value: highRisk.toString(), change: "Live", icon: AlertTriangle, color: "text-amber-400" },
+    { name: "AI Confidence Avg", value: `${avgConfidence.toFixed(1)}%`, change: "Live", icon: BrainCircuit, color: "text-purple-400" },
+    { name: "Sys Health", value: "99.9%", change: "Stable", icon: Activity, color: "text-emerald-400" },
+  ];
 
   // User Management functions
   const toggleUserRole = (id: string) => {
@@ -114,7 +135,7 @@ export default function AdminDashboard() {
         {activeTab === "overview" && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-              {stats.map((stat, i) => (
+              {liveStats.map((stat, i) => (
                 <div key={i} className="glass-panel p-6 rounded-2xl border border-white/5 relative overflow-hidden group hover:border-white/10 transition-colors">
                   <div className={`absolute -right-6 -top-6 w-24 h-24 bg-current opacity-[0.03] rounded-full group-hover:scale-110 transition-transform duration-500 ${stat.color}`} />
                   <div className="flex items-center justify-between mb-4">
@@ -151,7 +172,11 @@ export default function AdminDashboard() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
-                      {mockPatients.map((pt, i) => (
+                      {loading ? (
+                         <tr><td colSpan={5} className="p-8 text-center text-slate-500 animate-pulse">Connecting to Database...</td></tr>
+                      ) : livePatients.length === 0 ? (
+                         <tr><td colSpan={5} className="p-8 text-center text-slate-500">No patient records found in database.</td></tr>
+                      ) : livePatients.map((pt, i) => (
                         <tr key={i} className="hover:bg-white/[0.02] transition-colors group">
                           <td className="p-4 font-medium text-slate-300">{pt.id}</td>
                           <td className="p-4 text-slate-400">{pt.age}</td>
@@ -234,7 +259,11 @@ export default function AdminDashboard() {
              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                {/* Patient List */}
                <div className="lg:col-span-1 border border-white/5 bg-slate-900/50 rounded-2xl overflow-hidden h-fit">
-                 {mockPatients.map((pt, i) => (
+                 {loading ? (
+                    <div className="p-8 text-center text-slate-500 animate-pulse">Loading DB...</div>
+                 ) : livePatients.length === 0 ? (
+                    <div className="p-8 text-center text-slate-500">No records found.</div>
+                 ) : livePatients.map((pt, i) => (
                    <div 
                     onClick={() => setSelectedPatient(pt)}
                     key={i} 

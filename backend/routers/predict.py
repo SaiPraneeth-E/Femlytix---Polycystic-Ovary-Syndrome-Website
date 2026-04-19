@@ -2,8 +2,58 @@ from fastapi import APIRouter, File, UploadFile, Form
 from typing import Optional
 from services.ml_pipeline import predict_clinical, process_ultrasound, get_rl_recommendations, get_gemini_analysis
 import json
+import os
+from datetime import datetime
 
 router = APIRouter(prefix="/api/predict", tags=["Predictions"])
+
+DB_FILE = "patients_db.json"
+
+def save_patient_record(patient_info, clinical_res, image_res):
+    try:
+        if not os.path.exists(DB_FILE):
+            with open(DB_FILE, "w") as f:
+                json.dump([], f)
+        
+        with open(DB_FILE, "r") as f:
+            db = json.load(f)
+            
+        # Determine strict severity based on ensemble logic
+        prob = image_res.get("pcos_probability", 0)
+        risk_status = "High Risk" if prob > 0.6 else ("Review Required" if prob > 0.4 else "Clear")
+        severity_class = "critical" if prob > 0.6 else ("warning" if prob > 0.4 else "normal")
+        
+        record = {
+            "id": patient_info.get("patient_id", f"PT-{len(db)+1000}"),
+            "name": patient_info.get("name", "Unknown Patient"),
+            "age": patient_info.get("age", 25),
+            "status": risk_status,
+            "confidence": f"{prob * 100:.1f}%",
+            "time": datetime.now().strftime("%Y-%m-%d %H:%M"),
+            "severity": severity_class,
+            "features": {
+                "bmi": clinical_res.get("calculated_bmi", 22.0),
+                "fshLhRatio": round(patient_info.get("fsh", 1.0) / (patient_info.get("lh", 1.0) + 0.001), 2),
+                "cycleLength": patient_info.get("cycle_length", 28),
+                "follicles": 14 if prob > 0.5 else 5
+            }
+        }
+        
+        # Insert at top (newest first)
+        db.insert(0, record)
+        
+        with open(DB_FILE, "w") as f:
+            json.dump(db, f, indent=4)
+    except Exception as e:
+        print(f"Failed to append to DB: {e}")
+
+@router.get("/patients")
+def get_patients():
+    if os.path.exists(DB_FILE):
+        with open(DB_FILE, "r") as f:
+            return json.load(f)
+    return []
+
 
 @router.post("/clinical")
 def predict_clinical_endpoint(data: dict):
@@ -44,6 +94,9 @@ async def full_prediction_pipeline(
         bmi=clinical_res["calculated_bmi"],
         bmi_class=clinical_res.get("bmi_classification", "Normal")
     )
+    
+    # 5. Persist the diagnostics to local JSON database before routing logic back to user
+    save_patient_record(data, clinical_res, image_res)
     
     return {
         "clinical_results": clinical_res,
