@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ShieldAlert, ArrowRight, Loader2, UserCog } from "lucide-react";
+import Link from "next/link";
+import { ShieldAlert, ArrowRight, Loader2, UserCog, ArrowLeft } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
 export default function Login() {
@@ -44,8 +45,14 @@ export default function Login() {
     };
 
     return (
-        <main className="min-h-screen flex items-center justify-center p-6 relative">
+        <main className="min-h-screen flex flex-col items-center justify-center p-6 relative">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-blue-600 rounded-full blur-[150px] opacity-10 pointer-events-none" />
+
+            <div className="w-full max-w-md mb-6 flex justify-start z-10">
+                <Link href="/" className="flex items-center gap-2 text-sm text-slate-400 hover:text-cyan-400 transition-colors bg-slate-900/50 px-4 py-2 rounded-full border border-slate-800 backdrop-blur-sm group">
+                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Home
+                </Link>
+            </div>
 
             <div className="w-full max-w-md glass-panel p-8 z-10 text-center relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-blue-600" />

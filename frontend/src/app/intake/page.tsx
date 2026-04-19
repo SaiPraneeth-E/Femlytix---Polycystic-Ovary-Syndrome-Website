@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { UploadCloud, Activity, ArrowRight, Loader2 } from "lucide-react";
+import { UploadCloud, Activity, ArrowRight, Loader2, ArrowLeft } from "lucide-react";
 
 export default function IntakeForm() {
     const router = useRouter();
@@ -101,7 +102,14 @@ export default function IntakeForm() {
     };
 
     return (
-        <main className="min-h-screen p-8 md:p-16 flex justify-center items-center">
+        <main className="min-h-screen p-8 md:p-16 flex flex-col items-center">
+            
+            <div className="w-full max-w-4xl flex justify-start mb-6">
+                <Link href="/" className="flex items-center gap-2 text-sm text-slate-400 hover:text-cyan-400 transition-colors bg-slate-900/50 px-4 py-2 rounded-full border border-slate-800 backdrop-blur-sm group">
+                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Home
+                </Link>
+            </div>
+
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
