@@ -128,20 +128,30 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="bg-slate-900/50 backdrop-blur-xl p-8 rounded-3xl border border-slate-800 max-w-md w-full">
-            <h5 className="text-xs uppercase tracking-widest font-bold text-pink-500/60 mb-6">Project Architect</h5>
-            <div className="flex flex-col gap-4">
-              <h6 className="text-xl font-bold text-white">Edupulapati Sai Praneeth</h6>
-              <div className="flex flex-col gap-3">
-                <a href="mailto:saipraneeth080805@gmail.com" className="flex items-center gap-3 text-sm text-slate-400 hover:text-pink-400 transition-colors">
-                  <Mail className="w-4 h-4" /> saipraneeth080805@gmail.com
-                </a>
-                <a href="https://www.linkedin.com/in/edupulapatisaipraneeth/" target="_blank" rel="noreferrer" className="flex items-center gap-3 text-sm text-slate-400 hover:text-pink-400 transition-colors">
-                  <Linkedin className="w-4 h-4" /> LinkedIn Profile
-                </a>
-                <a href="https://github.com/SaiPraneeth-E" target="_blank" rel="noreferrer" className="flex items-center gap-3 text-sm text-slate-400 hover:text-pink-400 transition-colors">
-                  <Github className="w-4 h-4" /> GitHub: SaiPraneeth-E
-                </a>
+          <div className="bg-slate-900/50 backdrop-blur-xl p-8 rounded-3xl border border-slate-800 max-w-xl w-full">
+            <h5 className="text-xs uppercase tracking-widest font-bold text-pink-500/60 mb-6">Project Architects</h5>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+              <div className="flex flex-col gap-4">
+                <h6 className="text-xl font-bold text-white">Edupulapati Sai Praneeth</h6>
+                <div className="flex flex-col gap-3">
+                  <a href="mailto:saipraneeth080805@gmail.com" className="flex items-center gap-3 text-sm text-slate-400 hover:text-pink-400 transition-colors">
+                    <Mail className="w-4 h-4" /> saipraneeth080805@gmail.com
+                  </a>
+                  <a href="https://www.linkedin.com/in/edupulapatisaipraneeth/" target="_blank" rel="noreferrer" className="flex items-center gap-3 text-sm text-slate-400 hover:text-pink-400 transition-colors">
+                    <Linkedin className="w-4 h-4" /> LinkedIn Profile
+                  </a>
+                </div>
+              </div>
+              <div className="flex flex-col gap-4">
+                <h6 className="text-xl font-bold text-white">Liel Stephen</h6>
+                <div className="flex flex-col gap-3">
+                  <a href="mailto:lielstephen@gmail.com" className="flex items-center gap-3 text-sm text-slate-400 hover:text-pink-400 transition-colors">
+                    <Mail className="w-4 h-4" /> lielstephen@gmail.com
+                  </a>
+                  <a href="https://github.com/LielStephen" target="_blank" rel="noreferrer" className="flex items-center gap-3 text-sm text-slate-400 hover:text-pink-400 transition-colors">
+                    <Github className="w-4 h-4" /> GitHub: LielStephen
+                  </a>
+                </div>
               </div>
             </div>
           </div>
