@@ -55,11 +55,20 @@ export const OvaryIcon = ({ className }: { className?: string }) => (
 
 export default function AnimatedOvaryBackground() {
   const [mounted, setMounted] = useState(false);
+  const [particles, setParticles] = useState<{ x: string, y: string, duration: number, delay: number }[]>([]);
   const { scrollY } = useScroll();
   const yRange = useTransform(scrollY, [0, 500], [0, -100]);
 
   useEffect(() => {
     setMounted(true);
+    // Generate particles on mount to avoid hydration mismatch
+    const newParticles = [...Array(15)].map(() => ({
+      x: Math.random() * 100 + "%",
+      y: Math.random() * 100 + "%",
+      duration: Math.random() * 5 + 5,
+      delay: Math.random() * 5
+    }));
+    setParticles(newParticles);
   }, []);
 
   if (!mounted) return null;
@@ -115,13 +124,13 @@ export default function AnimatedOvaryBackground() {
       </svg>
 
       {/* Floating Particles */}
-      {[...Array(15)].map((_, i) => (
+      {particles.map((particle, i) => (
         <motion.div
           key={i}
           className="absolute w-1 h-1 bg-pink-400 rounded-full opacity-40"
           initial={{ 
-            x: Math.random() * 100 + "%", 
-            y: Math.random() * 100 + "%",
+            x: particle.x, 
+            y: particle.y,
             scale: 0
           }}
           animate={{ 
@@ -130,10 +139,10 @@ export default function AnimatedOvaryBackground() {
             scale: [0, 1, 0.5]
           }}
           transition={{ 
-            duration: Math.random() * 5 + 5, 
+            duration: particle.duration, 
             repeat: Infinity, 
             ease: "linear",
-            delay: Math.random() * 5
+            delay: particle.delay
           }}
         />
       ))}
