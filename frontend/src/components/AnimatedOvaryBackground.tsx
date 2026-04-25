@@ -150,137 +150,70 @@ export const OvaryIcon = ({ className }: { className?: string }) => (
    and flowing fallopian-tube curves.
    ────────────────────────────────────────────────────────── */
 
-// A large, ghostly ovary silhouette for the background with "evolution" animations
-const GhostOvary = ({ side, delay, scrollYProgress }: { side: "left" | "right"; delay: number; scrollYProgress: any }) => {
-  const isLeft = side === "left";
-  
-  // Evolutionary transforms based on scroll (using pixel ranges)
-  const complexity = useTransform(scrollYProgress, [0, 800], [1, 1.3]);
-  const follicleOpacity = useTransform(scrollYProgress, [0, 800], [0.03, 0.12]);
-  const rotation = useTransform(scrollYProgress, [0, 1000], [0, isLeft ? -15 : 15]);
+/* ──────────────────────────────────────────────────────────
+   ANIMATED OVARY BACKGROUND – Precisely matching the reference image
+   with central vertical oval, side nodes, and connecting hormonal lines.
+   ────────────────────────────────────────────────────────── */
 
+const BiologicalNode = ({ side, delay }: { side: "left" | "right"; delay: number }) => {
+  const isLeft = side === "left";
   return (
     <motion.div
-      className={`absolute ${isLeft ? "left-[-8%] top-[15%]" : "right-[-8%] top-[10%]"}`}
-      style={{ rotate: rotation }}
-      initial={{ opacity: 0, scale: 0.7 }}
-      animate={{ 
-        opacity: [0, 1, 0.8, 1],
-        scale: [0.95, 1, 0.98, 1.02, 1],
-      }}
-      transition={{ 
-        duration: 8, 
-        delay, 
-        repeat: Infinity, 
-        repeatType: "reverse",
-        ease: "easeInOut" 
-      }}
+      className={`absolute top-[45%] ${isLeft ? "left-[10%]" : "right-[10%]"} -translate-y-1/2`}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1.5, delay, ease: "easeOut" }}
     >
-      <svg
-        width="380" height="420"
-        viewBox="0 0 380 420"
-        fill="none"
-        className={`opacity-[0.08] ${isLeft ? "" : "scale-x-[-1]"}`}
-      >
-        {/* Ovary body with pulsing stroke */}
-        <motion.ellipse
-          cx="190" cy="210" rx="140" ry="170"
-          stroke="#ec4899"
-          strokeWidth="1.5"
-          fill="url(#ovary-body-grad)"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1, strokeWidth: [1, 2, 1] }}
-          transition={{ duration: 4, delay: delay + 0.5, ease: "easeInOut", strokeWidth: { repeat: Infinity, duration: 4 } }}
-        />
-        <defs>
-          <radialGradient id="ovary-body-grad" cx="190" cy="210" r="170" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#ec4899" stopOpacity="0.05" />
-            <stop offset="100%" stopColor="#a855f7" stopOpacity="0.02" />
-          </radialGradient>
-        </defs>
-
-        {/* Inner follicle ring with "maturation" pulse */}
-        <motion.ellipse
-          cx="190" cy="210" rx="90" ry="110"
-          stroke="#a855f7"
-          strokeWidth="0.8"
-          strokeDasharray="6 8"
-          fill="none"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-        />
-
-        {/* Follicle circles with "maturation" animation linked to scroll complexity */}
-        {[
-          { cx: 140, cy: 140, r: 22, t: 3 },
-          { cx: 240, cy: 130, r: 18, t: 4 },
-          { cx: 120, cy: 240, r: 25, t: 5 },
-          { cx: 260, cy: 220, r: 20, t: 3.5 },
-          { cx: 170, cy: 310, r: 16, t: 4.5 },
-          { cx: 220, cy: 290, r: 24, t: 6 },
-          { cx: 150, cy: 180, r: 14, t: 3.2 },
-          { cx: 230, cy: 180, r: 12, t: 4.8 },
-        ].map((f, i) => (
-          <motion.circle
-            key={i}
-            cx={f.cx} cy={f.cy} 
-            r={f.r}
-            style={{ 
-              scale: complexity,
-              opacity: follicleOpacity
-            }}
-            stroke="#ec4899"
-            strokeWidth="0.6"
-            fill="#ec4899"
-            fillOpacity="0.03"
-            animate={{ 
-              scale: [1, 1.1, 0.95, 1],
-              fillOpacity: [0.03, 0.1, 0.03],
-            }}
-            transition={{
-              delay: delay + i * 0.3,
-              duration: f.t,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-
-        {/* Fallopian tube extending from the top */}
-        <motion.path
-          d="M190 40 C200 20, 260 10, 300 30 C340 50, 360 100, 340 140"
-          stroke="#a855f7"
-          strokeWidth="1.2"
-          strokeLinecap="round"
-          fill="none"
-          animate={{ pathLength: [0.95, 1, 0.95] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </svg>
+      <div className="relative">
+        {/* Outer Glow Ring */}
+        <div className={`absolute inset-0 rounded-full blur-[40px] opacity-20 ${isLeft ? "bg-pink-500" : "bg-purple-500"}`} />
+        
+        <svg width="180" height="180" viewBox="0 0 100 100" className="opacity-40">
+          <circle cx="50" cy="50" r="48" stroke="currentColor" strokeWidth="0.5" fill="none" className="text-slate-700" />
+          <circle cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="0.3" strokeDasharray="2 4" fill="none" className="text-pink-500/30" />
+          
+          {/* Internal follicles */}
+          {[...Array(8)].map((_, i) => (
+            <motion.circle
+              key={i}
+              cx={40 + Math.random() * 20}
+              cy={40 + Math.random() * 20}
+              r={1.5 + Math.random() * 2.5}
+              fill={isLeft ? "#ec4899" : "#a855f7"}
+              fillOpacity="0.4"
+              animate={{ 
+                opacity: [0.2, 0.6, 0.2],
+                scale: [0.8, 1.2, 0.8]
+              }}
+              transition={{ 
+                duration: 3 + Math.random() * 2, 
+                repeat: Infinity, 
+                delay: Math.random() * 2 
+              }}
+            />
+          ))}
+        </svg>
+      </div>
     </motion.div>
   );
 };
 
 export default function AnimatedOvaryBackground() {
   const [mounted, setMounted] = useState(false);
-  const [particles, setParticles] = useState<{ x: number; y: number; size: number; duration: number; delay: number; color: string; type: 'follicle' | 'cell' }[]>([]);
+  const [particles, setParticles] = useState<{ x: number; y: number; size: number; duration: number; delay: number; color: string }[]>([]);
   const { scrollY } = useScroll();
-  const yRange = useTransform(scrollY, [0, 500], [0, -80]);
-  const yRangeOpposite = useTransform(scrollY, [0, 500], [0, 60]);
-  const rotateLeft = useTransform(scrollY, [0, 1000], [0, -15]);
-  const rotateRight = useTransform(scrollY, [0, 1000], [0, 15]);
+  const yRange = useTransform(scrollY, [0, 500], [0, -50]);
 
   useEffect(() => {
     setMounted(true);
-    const colors = ["#ec4899", "#a855f7", "#6366f1", "#f472b6", "#c084fc"];
-    const newParticles = [...Array(40)].map((_, i) => ({
+    const colors = ["#ec4899", "#a855f7", "#6366f1"];
+    const newParticles = [...Array(30)].map(() => ({
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: Math.random() * 4 + 1,
-      duration: Math.random() * 12 + 8,
-      delay: Math.random() * 10,
+      size: Math.random() * 2 + 0.5,
+      duration: Math.random() * 10 + 10,
+      delay: Math.random() * 5,
       color: colors[Math.floor(Math.random() * colors.length)],
-      type: i % 3 === 0 ? 'cell' : 'follicle' as 'follicle' | 'cell',
     }));
     setParticles(newParticles);
   }, []);
@@ -288,128 +221,73 @@ export default function AnimatedOvaryBackground() {
   if (!mounted) return null;
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10 bg-slate-950">
-      {/* Dynamic Grid / Cellular Texture */}
-      <div className="absolute inset-0 opacity-[0.03]"
-           style={{
-             backgroundImage: `radial-gradient(#ec4899 0.5px, transparent 0.5px)`,
-             backgroundSize: '40px 40px'
-           }}
-      />
+    <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10 bg-[#020617]">
+      {/* Central Large Vertical Ellipse */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[800px] border border-slate-800/40 rounded-[50%] opacity-40" />
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[750px] border border-pink-500/10 rounded-[50%] opacity-20" />
 
-      {/* Evolution Transitions – Large ghostly ovary shapes */}
-      <motion.div style={{ y: yRange }}>
-        <GhostOvary side="left" delay={0.3} scrollYProgress={scrollY} />
-      </motion.div>
-      <motion.div style={{ y: yRangeOpposite }}>
-        <GhostOvary side="right" delay={0.8} scrollYProgress={scrollY} />
-      </motion.div>
-
-      {/* Ambient hormonal glow orbs */}
-      <motion.div
-        style={{ y: yRange }}
-        className="absolute top-[10%] left-[-5%] w-[50vw] h-[50vw] bg-pink-600/5 rounded-full blur-[150px]"
-        animate={{ 
-          scale: [1, 1.2, 1],
-          opacity: [0.03, 0.07, 0.03] 
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        style={{ y: yRangeOpposite }}
-        className="absolute bottom-[10%] right-[-5%] w-[55vw] h-[55vw] bg-purple-600/5 rounded-full blur-[160px]"
-        animate={{ 
-          scale: [1.1, 1, 1.1],
-          opacity: [0.03, 0.06, 0.03] 
-        }}
-        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-      />
-
-      {/* "Hormonal Flow" lines (SVG) */}
+      {/* Horizontal Hormonal Connection Lines */}
       <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
         <defs>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-          <linearGradient id="tube-grad-1" x1="0%" y1="0%" x2="100%" y2="0%">
+          <linearGradient id="line-grad" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#ec4899" stopOpacity="0" />
-            <stop offset="30%" stopColor="#ec4899" stopOpacity="0.15" />
-            <stop offset="50%" stopColor="#a855f7" stopOpacity="0.2" />
+            <stop offset="20%" stopColor="#ec4899" stopOpacity="0.3" />
+            <stop offset="50%" stopColor="#a855f7" stopOpacity="0.4" />
+            <stop offset="80%" stopColor="#6366f1" stopOpacity="0.3" />
             <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
           </linearGradient>
         </defs>
 
-        {/* Dynamic paths representing hormonal signaling */}
-        {[
-          "M 0 300 Q 300 150 600 300 T 1200 300",
-          "M 0 500 Q 300 650 600 500 T 1200 500",
-          "M 200 0 Q 400 400 200 800",
-          "M 1000 0 Q 800 400 1000 800"
-        ].map((d, i) => (
-          <motion.path
-            key={i}
-            d={d}
-            stroke="url(#tube-grad-1)"
-            strokeWidth={i < 2 ? "1.5" : "0.5"}
-            fill="none"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 5, delay: i * 0.5, ease: "easeInOut" }}
-            className="opacity-20"
-          />
-        ))}
-
-        {/* Orbiting "signal" particles */}
-        {[0, 1, 2, 3].map((i) => (
-          <motion.circle
-            key={`signal-${i}`}
-            r="2"
-            fill={i % 2 === 0 ? "#ec4899" : "#a855f7"}
-            filter="url(#glow)"
-            animate={{
-              offsetDistance: ["0%", "100%"]
-            }}
-            transition={{
-              duration: 15 + i * 5,
-              repeat: Infinity,
-              ease: "linear",
-              delay: i * 2
-            }}
-            style={{ 
-              offsetPath: `path('${i % 2 === 0 ? "M 0 300 Q 300 150 600 300 T 1200 300" : "M 0 500 Q 300 650 600 500 T 1200 500"}')` 
-            } as React.CSSProperties}
-          />
-        ))}
+        {/* Wavy lines connecting side nodes to center */}
+        <motion.path
+          d="M 150 400 C 300 380, 450 420, 600 400 S 900 380, 1050 400"
+          stroke="url(#line-grad)"
+          strokeWidth="1.5"
+          fill="none"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 3, ease: "easeInOut" }}
+        />
+        <motion.path
+          d="M 150 420 C 300 440, 450 380, 600 420 S 900 440, 1050 420"
+          stroke="url(#line-grad)"
+          strokeWidth="1"
+          fill="none"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 3.5, delay: 0.5, ease: "easeInOut" }}
+          className="opacity-40"
+        />
       </svg>
 
-      {/* Evolution/Cellular Particles */}
+      {/* Side Biological Nodes */}
+      <BiologicalNode side="left" delay={0.5} />
+      <BiologicalNode side="right" delay={0.8} />
+
+      {/* Ambient Glows */}
+      <div className="absolute top-[20%] left-[15%] w-[400px] h-[400px] bg-pink-600/5 rounded-full blur-[120px]" />
+      <div className="absolute bottom-[20%] right-[15%] w-[450px] h-[450px] bg-purple-600/5 rounded-full blur-[140px]" />
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-pink-500/10 rounded-full blur-[100px]" />
+
+      {/* Floating small particles */}
       {particles.map((p, i) => (
         <motion.div
           key={i}
-          className={`absolute ${p.type === 'cell' ? 'border border-white/5' : 'rounded-full'}`}
+          className="absolute rounded-full"
           style={{
             left: `${p.x}%`,
             top: `${p.y}%`,
             width: p.size,
             height: p.size,
-            backgroundColor: p.type === 'follicle' ? p.color : 'transparent',
-            borderRadius: p.type === 'follicle' ? '50%' : '20%',
+            backgroundColor: p.color,
           }}
           animate={{
-            y: [0, -60, 0],
-            x: [0, Math.cos(i) * 30, 0],
+            y: [0, -40, 0],
             opacity: [0, 0.4, 0],
-            scale: [0.5, 1.2, 0.5],
-            rotate: p.type === 'cell' ? [0, 180, 360] : 0
           }}
           transition={{
             duration: p.duration,
             repeat: Infinity,
-            ease: "easeInOut",
             delay: p.delay,
           }}
         />
